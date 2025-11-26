@@ -3,6 +3,12 @@ const route = useRoute();
 const alias = route.params.alias;
 
 const { anime, pending, error } = await useAnime(alias);
+
+const currentEpisode = ref(null);
+
+const selectEpisode = (episode) => {
+  currentEpisode.value = episode;
+};
 </script>
 
 <template>
@@ -13,13 +19,23 @@ const { anime, pending, error } = await useAnime(alias);
       v-if="anime.poster && anime.poster.optimized"
       :src="`/base${anime.poster.optimized.preview}`"
     />
+
+    <HlsPlayer
+      v-if="currentEpisode && currentEpisode.hls_720"
+      :src="currentEpisode.hls_720"
+    />
+
     <div class="episodes-grid">
-      <div v-for="episode in anime.episodes">
+      <button
+        v-for="ep in anime.episodes"
+        :key="ep.id"
+        class="episode-card"
+        @click="selectEpisode(ep)"
+      >
         <div class="img-wrap">
-          <NuxtImg :src="`base${episode.preview.optimized.preview}`" />
+          <NuxtImg :src="`base${ep.preview.optimized.preview}`" />
         </div>
-        {{ episode.name }}
-      </div>
+      </button>
     </div>
   </div>
 </template>

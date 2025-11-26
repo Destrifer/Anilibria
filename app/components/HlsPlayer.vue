@@ -8,7 +8,7 @@ const props = defineProps({
 
 const videoEl = ref(null);
 
-onMounted(() => {
+const setupPlayer = () => {
   const video = videoEl.value;
   const source = props.src;
 
@@ -19,7 +19,16 @@ onMounted(() => {
     hls.loadSource(source);
     hls.attachMedia(video);
   }
-});
+};
+
+onMounted(setupPlayer);
+
+watch(
+  () => props.src,
+  () => {
+    setupPlayer();
+  }
+);
 </script>
 
 <template>
